@@ -386,6 +386,7 @@ public class Controller implements Initializable {
         });
 
         elevators.forEach(elevator -> {
+            elevator.setDaemon(true);
             elevator.currentFloorProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
