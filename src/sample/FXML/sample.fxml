@@ -53,7 +53,7 @@
             </Label>
             <Line endX="306.0" layoutX="105.0" layoutY="75.0" startX="-90.0" stroke="WHITE" AnchorPane.leftAnchor="14.5" AnchorPane.rightAnchor="14.5" />
             <ComboBox fx:id="strategy_cb" layoutX="109.0" layoutY="303.0" prefHeight="44.0" prefWidth="211.0" />
-            <ComboBox fx:id="passangers_cb" layoutX="111.0" layoutY="390.0" prefHeight="44.0" prefWidth="211.0" />
+            <ComboBox fx:id="passengers_cb" layoutX="111.0" layoutY="390.0" prefHeight="44.0" prefWidth="211.0" />
             <Spinner fx:id="weight_sp" layoutX="112.0" layoutY="556.0" prefHeight="44.0" prefWidth="211.0" />
             <Label layoutX="165.0" layoutY="264.0" prefHeight="39.0" prefWidth="101.0" text="Strategy" textFill="WHITE">
                <font>
