@@ -4,6 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import sample.models.building.passenger.Passenger;
 
+import java.util.logging.Level;
+
 public class Floor {
     private final ObservableList<ObservableList<Passenger>> passengers;
     private final int maxQueueSize;
@@ -32,7 +34,7 @@ public class Floor {
         if (passengers.get(passenger.getQueue()).size() < maxQueueSize) {
             passengers.get(passenger.getQueue()).add(passenger);
         } else {
-            Logger.Log(String.format("Failed to enter the queue %d at floor %d. Queue filled, size %d\n",
+            Logger.Log(Level.WARNING, String.format("Failed to enter the queue %d at floor %d. Queue filled, size %d\n",
                     passenger.getQueue(), id, passengers.get(passenger.getQueue()).size()));
         }
     }

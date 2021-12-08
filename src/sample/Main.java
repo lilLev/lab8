@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sample.models.building.Logger;
 
+import java.util.logging.Level;
+
 public class Main extends Application {
     private static Stage ps;
 
@@ -26,7 +28,6 @@ public class Main extends Application {
         setPs(primaryStage);
         Parent root = FXMLLoader.load(getClass().getResource("FXML/sample.fxml"));
         primaryStage.setTitle("Elevator simulation");
-        primaryStage.initStyle(StageStyle.TRANSPARENT);
         Screen screen = Screen.getPrimary();
         double sceneWidth = 1366.0;
         double sceneHeight = 728.0;
