@@ -9,13 +9,13 @@ public class Mediator {
 
     public void notify(Object obj) {
         if (obj.getClass() == Passenger.class) {
-            reactOnPassanger((Passenger) obj);
+            reactOnPassenger((Passenger) obj);
         } else if (obj.getClass() == Elevators.class) {
             reactOnElevator((Elevators) obj);
         }
     }
 
-    private void reactOnPassanger(Passenger passenger) {
+    private void reactOnPassenger(Passenger passenger) {
         Elevators elevator = Building.getInstance(null, null).
                 getElevators().
                 get(passenger.getQueue());
@@ -41,5 +41,4 @@ public class Mediator {
             passengers.remove(0);
         }
     }
-
 }
