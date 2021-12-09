@@ -27,6 +27,7 @@ import javafx.util.Pair;
 import sample.Main;
 import sample.models.building.Building;
 import sample.models.building.Floor;
+import sample.models.building.Logger;
 import sample.models.building.Mediator;
 import sample.models.building.elevator.Elevator;
 import sample.models.building.elevator.IElevatorStrategy;
@@ -466,6 +467,7 @@ public class Controller implements Initializable {
         isRunning = false;
         floorsViews.clear();
         elevatorsViews.clear();
+        Logger.clear();
     }
 }
 
