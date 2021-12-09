@@ -33,9 +33,6 @@ public class Floor {
     public void addPassengerToQueue(Passenger passenger) {
         if (passengers.get(passenger.getQueue()).size() < maxQueueSize) {
             passengers.get(passenger.getQueue()).add(passenger);
-        } else {
-            Logger.Log(Level.WARNING, String.format("Failed to enter the queue %d at floor %d. Queue filled, size %d\n",
-                    passenger.getQueue(), id, passengers.get(passenger.getQueue()).size()));
         }
     }
 
@@ -47,6 +44,4 @@ public class Floor {
     public int getId() {
         return id;
     }
-
-
 }

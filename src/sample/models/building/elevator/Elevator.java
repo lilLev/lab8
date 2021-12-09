@@ -5,12 +5,14 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import sample.models.building.Building;
+import sample.models.building.Logger;
 import sample.models.building.Mediator;
 import sample.models.building.passenger.Passenger;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.logging.Level;
 
 public class Elevator extends Thread {
     private final ObservableList<Passenger> passengersInside;
@@ -37,7 +39,9 @@ public class Elevator extends Thread {
         this.mediator = mediator;
         this.idNum = idNum;
         this.capacity = capacity;
-        setName("Elevator " + idNum);
+        threadName = "Elevator " + (idNum + 1);
+        setName(threadName);
+        Logger.Log(Level.INFO, threadName + " is created!");
     }
 
     public ObservableList<Passenger> getPassengersInside() {
@@ -233,6 +237,7 @@ public class Elevator extends Thread {
     }
 
     synchronized public void AddNewDestination(int floorNumber) {
+        Logger.Log(Level.INFO, threadName + ", added new destination to " + (floorNumber + 1) + " floor.");
         for (int i : destinations) {
             if (i == floorNumber) return;
         }
@@ -242,6 +247,7 @@ public class Elevator extends Thread {
 
     @Override
     public void run() {
+        Logger.Log(Level.INFO, threadName + " is running!");
         while (isRunning) {
             if (!destinations.isEmpty() || !passengersInside.isEmpty()) {
                 goToFloor(moveNext());

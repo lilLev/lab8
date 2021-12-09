@@ -25,6 +25,7 @@ public class LogFormatter extends Formatter {
                 .append(" ")
                 .append(record.getMessage())
                 .append(" ")
+                .append("\n")
                 .toString();
     }
 }
