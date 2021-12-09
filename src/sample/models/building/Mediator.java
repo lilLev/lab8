@@ -2,7 +2,7 @@ package sample.models.building;
 
 import javafx.collections.ObservableList;
 import sample.models.building.elevator.DirectionEnum;
-import sample.models.building.elevator.Elevators;
+import sample.models.building.elevator.Elevator;
 import sample.models.building.passenger.Passenger;
 
 public class Mediator {
@@ -10,13 +10,13 @@ public class Mediator {
     public void notify(Object obj) {
         if (obj.getClass() == Passenger.class) {
             reactOnPassenger((Passenger) obj);
-        } else if (obj.getClass() == Elevators.class) {
-            reactOnElevator((Elevators) obj);
+        } else if (obj.getClass() == Elevator.class) {
+            reactOnElevator((Elevator) obj);
         }
     }
 
     private void reactOnPassenger(Passenger passenger) {
-        Elevators elevator = Building.getInstance(null, null).
+        Elevator elevator = Building.getInstance(null, null).
                 getElevators().
                 get(passenger.getQueue());
 
@@ -29,7 +29,7 @@ public class Mediator {
         }
     }
 
-    private void reactOnElevator(Elevators elevator) {
+    private void reactOnElevator(Elevator elevator) {
         ObservableList<Passenger> passengers = Building.getInstance(null, null).
                 getFloors().
                 get(elevator.getCurrentFloor()).
