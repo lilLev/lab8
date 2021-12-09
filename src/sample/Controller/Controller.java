@@ -27,8 +27,9 @@ import javafx.util.Pair;
 import sample.Main;
 import sample.models.building.Building;
 import sample.models.building.Floor;
+import sample.models.building.Logger;
 import sample.models.building.Mediator;
-import sample.models.building.elevator.Elevators;
+import sample.models.building.elevator.Elevator;
 import sample.models.building.elevator.IElevatorStrategy;
 import sample.models.building.elevator.InterruptibleStrategy;
 import sample.models.building.elevator.UnInterruptibleStrategy;
@@ -50,7 +51,7 @@ public class Controller implements Initializable {
     private final double spaceBetweenElevators = 65;
     private final double elevatorWidth = 45;
     Random random = new Random();
-    ArrayList<Elevators> elevators = new ArrayList<>();
+    ArrayList<Elevator> elevators = new ArrayList<>();
     ArrayList<Floor> floors = new ArrayList<>();
     @FXML
     private AnchorPane elevatorPane;
@@ -74,7 +75,6 @@ public class Controller implements Initializable {
     private Rectangle backgroundRect;
     private HashMap<Pair<Integer, Integer>, List<ImageView>> queues;
     private HashMap<Integer, List<ImageView>> personsInElevator;
-    private List<ImageView> personsToRemove;
     private List<Image> personImages;
     private Building building;
     private int floorsNum;
@@ -84,6 +84,8 @@ public class Controller implements Initializable {
     private IElevatorStrategy strategy;
     private int maxElevatorWeight;
     private int minTimeToSpawn;
+    PassengerManager passengerManager;
+    public boolean isRunning = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -272,7 +274,7 @@ public class Controller implements Initializable {
         if(srcFloor == destFloor){
             return;
         }
-        Elevators elevatorThread = building.getElevators().get(elevatorNum);
+        Elevator elevatorThread = building.getElevators().get(elevatorNum);
         Rectangle elevator = elevatorsViews.get(elevatorNum);
         Rectangle floor = floorsViews.get(destFloor);
         double animationDuration = Math.abs((srcFloor) - destFloor) * floorHeight / 30;
@@ -354,15 +356,39 @@ public class Controller implements Initializable {
         });
     }
 
-
     public void onStart(ActionEvent event) {
-        Mediator mediator = new Mediator();
-        for (int i = 0; i < elevatorsNum; i++) {
-            elevators.add(new Elevators(maxElevatorWeight, elevatorsCapacity, mediator, i));
-            elevators.get(i).setStrategy(strategy);
+        if(isRunning)
+        {
+            return;
         }
-        for (int i = 0; i < floorsNum; i++) {
-            floors.add(new Floor(elevatorsNum, maxPersonsInQueue, i));
+        isRunning = true;
+        Mediator mediator = new Mediator();
+        if(elevatorsNum > elevators.size())
+        {
+            for (int i = 0; i < elevatorsNum - elevators.size(); i++) {
+                elevators.add(new Elevator(maxElevatorWeight, elevatorsCapacity, mediator, i));
+                elevators.get(i).setStrategy(strategy);
+            }
+        }
+        else
+        {
+            while(elevators.size() > elevatorsNum)
+            {
+                elevators.remove(elevators.size() - 1);
+            }
+        }
+        if(floorsNum > floors.size())
+        {
+            for (int i = 0; i < floorsNum; i++) {
+                floors.add(new Floor(elevatorsNum, maxPersonsInQueue, i));
+            }
+        }
+        else
+        {
+            while (floorsNum < floors.size())
+            {
+                floors.remove(floors.size() - 1);
+            }
         }
         building = Building.getInstance(floors, elevators);
         floors.forEach(floor -> {
@@ -386,13 +412,14 @@ public class Controller implements Initializable {
         });
 
         elevators.forEach(elevator -> {
-            elevator.setDaemon(true);
+            elevator.setIsRunning(true);
             elevator.currentFloorProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
+                            if(isRunning)
                             moveElevatorToFloor(elevator.getIdNum(), number.intValue(), t1.intValue());
                         }
                     });
@@ -411,6 +438,7 @@ public class Controller implements Initializable {
                             if (change.getAddedSize() > 0) {
                                 movePersonToElevator(elevator.getCurrentFloor(), elevator.getIdNum());
                             } else if (change.getRemovedSize() > 0) {
+                                if(isRunning)
                                 movePersonOutOfElevator(elevator.getIdNum());
                             }
                         }
@@ -419,11 +447,27 @@ public class Controller implements Initializable {
             });
         });
         elevators.forEach(elevator -> {
-            elevator.start();
+            if(!elevator.isAlive())
+            {
+                elevator.start();
+            }
         });
-        PassengerManager pm = PassengerManager.getInstance(minTimeToSpawn * 1000,
+        passengerManager = PassengerManager.getInstance(minTimeToSpawn * 1000,
                 (minTimeToSpawn * 2) * 1000,maxElevatorWeight, mediator);
+    }
 
+    public void stop()
+    {
+        elevators.forEach(elevator ->
+        {
+            elevator.setIsRunning(false);
+        });
+
+        passengerManager.setIsRunning(false);
+        isRunning = false;
+        floorsViews.clear();
+        elevatorsViews.clear();
+        Logger.clear();
     }
 }
 

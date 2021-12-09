@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Level;
 
-public class Elevators extends Thread {
+public class Elevator extends Thread {
     private final ObservableList<Passenger> passengersInside;
     private final float maxWeight;
     private final IntegerProperty currentFloor;
@@ -25,11 +25,12 @@ public class Elevators extends Thread {
     public boolean isAnimated = false;
     private IElevatorStrategy strategy;
     private DirectionEnum currentDirection;
+    private boolean isRunning = false;
 
 
     private String threadName;
 
-    public Elevators(float maxWeight, int capacity, Mediator mediator, int idNum) {
+    public Elevator(float maxWeight, int capacity, Mediator mediator, int idNum) {
         passengersInside = FXCollections.observableArrayList();
         destinations = new LinkedList<>();
         currentFloor = new SimpleIntegerProperty(0);
@@ -160,7 +161,8 @@ public class Elevators extends Thread {
     }
 
     private void arrivedToFloor() {
-        mediator.notify(this);
+        if(isRunning) mediator.notify(this);
+
     }
 
     public void setStrategy(IElevatorStrategy str) {
@@ -225,6 +227,11 @@ public class Elevators extends Thread {
         }
     }
 
+    public void setIsRunning(boolean state)
+    {
+        isRunning = state;
+    }
+
     public DirectionEnum getCurrentDirection() {
         return currentDirection;
     }
@@ -241,7 +248,7 @@ public class Elevators extends Thread {
     @Override
     public void run() {
         Logger.Log(Level.INFO, threadName + " is running!");
-        while (true) {
+        while (isRunning) {
             if (!destinations.isEmpty() || !passengersInside.isEmpty()) {
                 goToFloor(moveNext());
                 if(currentDirection != DirectionEnum.Stay) {
@@ -276,6 +283,8 @@ public class Elevators extends Thread {
                 }
             }
         }
+
+        passengersInside.clear();
     }
 
     public int getIdNum() {

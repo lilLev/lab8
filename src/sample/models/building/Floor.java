@@ -36,6 +36,11 @@ public class Floor {
         }
     }
 
+    public void clear()
+    {
+        passengers.clear();
+    }
+
     public int getId() {
         return id;
     }

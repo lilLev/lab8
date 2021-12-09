@@ -1,6 +1,6 @@
 package sample.models.building;
 
-import sample.models.building.elevator.Elevators;
+import sample.models.building.elevator.Elevator;
 import sample.models.building.elevator.IElevatorStrategy;
 
 import java.util.List;
@@ -8,14 +8,14 @@ import java.util.List;
 public class Building {
     private static Building instance = null;
     private final List<Floor> floors;
-    private final List<Elevators> elevators;
+    private final List<Elevator> elevators;
 
-    private Building(List<Floor> floors, List<Elevators> elevators) {
+    private Building(List<Floor> floors, List<Elevator> elevators) {
         this.floors = floors;
         this.elevators = elevators;
     }
 
-    public static Building getInstance(List<Floor> floors, List<Elevators> elevators) {
+    public static Building getInstance(List<Floor> floors, List<Elevator> elevators) {
         if (instance == null) instance = new Building(floors, elevators);
         return instance;
     }
@@ -24,7 +24,7 @@ public class Building {
         return floors;
     }
 
-    public List<Elevators> getElevators() {
+    public List<Elevator> getElevators() {
         return elevators;
     }
 
